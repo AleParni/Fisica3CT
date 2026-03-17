@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Física 3º Bachillerato — Materiales del Curso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0a0c10;
+      --surface:   #111318;
+      --surface2:  #181c24;
+      --border:    rgba(255,255,255,0.07);
+      --em:        #3b9eff;   /* electromagnetismo – azul eléctrico */
+      --em-glow:   rgba(59,158,255,0.18);
+      --td:        #ff7b3b;   /* termodinámica – naranja fuego */
+      --td-glow:   rgba(255,123,59,0.18);
+      --text:      #e8eaf0;
+      --muted:     #6b7280;
+      --tag-bg:    rgba(255,255,255,0.06);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(59,158,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,158,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative; z-index: 10;
+      padding: 2.5rem 2rem 2rem;
+      display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(10,12,16,0.9) 0%, transparent 100%);
+    }
+    .header-left { max-width: 620px; }
+    .course-tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    h1 span.em { color: var(--em); }
+    h1 span.td { color: var(--td); }
+    .subtitle {
+      margin-top: 0.6rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+    .stats {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.6rem; font-weight: 700;
+      line-height: 1;
+    }
+    .stat-num.em { color: var(--em); }
+    .stat-num.td { color: var(--td); }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.2rem;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      position: relative; z-index: 5;
+      max-width: 1400px; margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    /* ── SUBJECT PANEL ── */
+    .subject-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .panel-header {
+      padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .panel-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      opacity: 0.08;
+    }
+    .em-panel .panel-header::before { background: radial-gradient(ellipse at left, var(--em), transparent 70%); }
+    .td-panel .panel-header::before { background: radial-gradient(ellipse at left, var(--td), transparent 70%); }
+
+    .panel-title {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .panel-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: grid; place-items: center;
+      font-size: 1.1rem;
+    }
+    .em-panel .panel-icon { background: var(--em-glow); color: var(--em); }
+    .td-panel .panel-icon { background: var(--td-glow); color: var(--td); }
+
+    .panel-title h2 {
+      font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em;
+    }
+    .panel-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem; border-radius: 100px;
+    }
+
+    /* ── ADD FORM ── */
+    .add-form {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .add-form input, .add-form select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .add-form input { flex: 1; min-width: 140px; }
+    .add-form input::placeholder { color: var(--muted); }
+    .add-form input:focus { border-color: var(--em); }
+    .td-panel .add-form input:focus { border-color: var(--td); }
+    .add-form select option { background: var(--surface2); }
+    .btn-add {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem; font-weight: 700;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-add:active { transform: scale(0.97); }
+    .em-panel .btn-add { background: var(--em); color: #000; }
+    .td-panel .btn-add { background: var(--td); color: #000; }
+    .btn-add:hover { filter: brightness(1.15); }
+
+    /* ── TOPICS / CARDS ── */
+    .topics-list {
+      padding: 1rem 1.5rem;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      max-height: 600px; overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .topic-group { }
+    .topic-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.4rem;
+      padding: 0 0.25rem;
+    }
+    .em-panel .topic-label { color: var(--em); }
+    .td-panel .topic-label { color: var(--td); }
+
+    .material-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .material-card:hover { border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); }
+
+    .card-type-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: grid; place-items: center;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+    .em-panel .card-type-icon { background: var(--em-glow); }
+    .td-panel .card-type-icon { background: var(--td-glow); }
+
+    .card-body { flex: 1; min-width: 0; }
+    .card-name {
+      font-size: 0.88rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.66rem; color: var(--muted);
+      margin-top: 0.1rem;
+    }
+
+    .card-actions { display: flex; gap: 0.35rem; }
+    .btn-icon {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: grid; place-items: center;
+      font-size: 0.75rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+    .btn-icon.del:hover { background: rgba(255,80,80,0.15); color: #ff6060; border-color: rgba(255,80,80,0.3); }
+    .btn-icon.done { color: #4ade80; border-color: rgba(74,222,128,0.3); }
+
+    .empty-state {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      padding: 0.75rem 1.5rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .progress-header {
+      display: flex; justify-content: space-between;
+      font-size: 0.72rem; color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 0.4rem;
+    }
+    .progress-bar-bg {
+      height: 4px; border-radius: 100px;
+      background: var(--surface2);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+    .em-panel .progress-bar-fill { background: var(--em); }
+    .td-panel .progress-bar-fill { background: var(--td); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 5;
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-family: 'Space Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="course-tag">3º Bachillerato · Física</div>
+    <h1>
+      <span class="em">Electro&shy;magnetismo</span><br>
+      <span style="opacity:0.35">&amp;</span>
+      <span class="td"> Termodinámica</span>
+    </h1>
+    <p class="subtitle">Organizador de materiales del curso</p>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num em" id="stat-em">0</div>
+      <div class="stat-label">EM Materiales</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num td" id="stat-td">0</div>
+      <div class="stat-label">TD Materiales</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" style="color:#4ade80" id="stat-done">0</div>
+      <div class="stat-label">Completados</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ═══ ELECTROMAGNETISMO ═══ -->
+  <div class="subject-panel em-panel" id="em-panel">
+    <div class="panel-header">
+      <div class="panel-title">
+        <div class="panel-icon">⚡</div>
+        <h2>Electromagnetismo</h2>
+      </div>
+      <span class="panel-count" id="em-count">0 ítems</span>
+    </div>
+
+    <div class="add-form">
+      <input id="em-input" type="text" placeholder="Nombre del material…" />
+      <select id="em-topic">
+        <option value="Campo Eléctrico">Campo Eléctrico</option>
+        <option value="Potencial Eléctrico">Potencial Eléctrico</option>
+        <option value="Condensadores">Condensadores</option>
+        <option value="Corriente Eléctrica">Corriente Eléctrica</option>
+        <option value="Campo Magnético">Campo Magnético</option>
+        <option value="Inducción Electromagnética">Inducción EM</option>
+        <option value="Ondas EM">Ondas EM</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <select id="em-type">
+        <option value="📄 Apunte">📄 Apunte</option>
+        <option value="📝 Ejercicio">📝 Ejercicio</option>
+        <option value="📊 Presentación">📊 Presentación</option>
+        <option value="🎬 Video">🎬 Video</option>
+        <option value="🔬 Práctica">🔬 Práctica</option>
+        <option value="📖 Teoría">📖 Teoría</option>
+        <option value="🧪 Examen">🧪 Examen</option>
+      </select>
+      <button class="btn-add" onclick="addItem('em')">+ Añadir</button>
+    </div>
+
+    <div class="topics-list" id="em-list">
+      <div class="empty-state">
+        <div class="empty-icon">⚡</div>
+        <p>Aún no hay materiales.<br>Añade el primero arriba.</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span>Progreso de revisión</span>
+        <span id="em-pct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="em-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TERMODINÁMICA ═══ -->
+  <div class="subject-panel td-panel" id="td-panel">
+    <div class="panel-header">
+      <div class="panel-title">
+        <div class="panel-icon">🔥</div>
+        <h2>Termodinámica</h2>
+      </div>
+      <span class="panel-count" id="td-count">0 ítems</span>
+    </div>
+
+    <div class="add-form">
+      <input id="td-input" type="text" placeholder="Nombre del material…" />
+      <select id="td-topic">
+        <option value="Temperatura y Calor">Temperatura y Calor</option>
+        <option value="1er Principio">1er Principio</option>
+        <option value="2do Principio">2do Principio</option>
+        <option value="Entropía">Entropía</option>
+        <option value="Ciclos Termodinámicos">Ciclos Termodinámicos</option>
+        <option value="Gas Ideal">Gas Ideal</option>
+        <option value="Transferencia de Calor">Transferencia de Calor</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <select id="td-type">
+        <option value="📄 Apunte">📄 Apunte</option>
+        <option value="📝 Ejercicio">📝 Ejercicio</option>
+        <option value="📊 Presentación">📊 Presentación</option>
+        <option value="🎬 Video">🎬 Video</option>
+        <option value="🔬 Práctica">🔬 Práctica</option>
+        <option value="📖 Teoría">📖 Teoría</option>
+        <option value="🧪 Examen">🧪 Examen</option>
+      </select>
+      <button class="btn-add" onclick="addItem('td')">+ Añadir</button>
+    </div>
+
+    <div class="topics-list" id="td-list">
+      <div class="empty-state">
+        <div class="empty-icon">🔥</div>
+        <p>Aún no hay materiales.<br>Añade el primero arriba.</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span>Progreso de revisión</span>
+        <span id="td-pct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="td-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Física · 3º Bachillerato &nbsp;|&nbsp; Los datos se guardan en tu navegador
+</footer>
+
+<script>
+  /* ── STATE ── */
+  const state = {
+    em: JSON.parse(localStorage.getItem('em-items') || '[]'),
+    td: JSON.parse(localStorage.getItem('td-items') || '[]'),
+  };
+
+  /* ── SAVE ── */
+  function save(subj) {
+    localStorage.setItem(`${subj}-items`, JSON.stringify(state[subj]));
+  }
+
+  /* ── ADD ── */
+  function addItem(subj) {
+    const input = document.getElementById(`${subj}-input`);
+    const topic = document.getElementById(`${subj}-topic`).value;
+    const type  = document.getElementById(`${subj}-type`).value;
+    const name  = input.value.trim();
+    if (!name) { input.focus(); return; }
+
+    state[subj].push({
+      id: Date.now(),
+      name,
+      topic,
+      type,
+      done: false,
+      date: new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'short' })
+    });
+    input.value = '';
+    save(subj);
+    render(subj);
+  }
+
+  /* ── TOGGLE DONE ── */
+  function toggleDone(subj, id) {
+    const item = state[subj].find(i => i.id === id);
+    if (item) { item.done = !item.done; save(subj); render(subj); }
+  }
+
+  /* ── DELETE ── */
+  function deleteItem(subj, id) {
+    state[subj] = state[subj].filter(i => i.id !== id);
+    save(subj); render(subj);
+  }
+
+  /* ── RENDER ── */
+  function render(subj) {
+    const list  = document.getElementById(`${subj}-list`);
+    const items = state[subj];
+
+    if (!items.length) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">${subj === 'em' ? '⚡' : '🔥'}</div>
+        <p>Aún no hay materiales.<br>Añade el primero arriba.</p>
+      </div>`;
+    } else {
+      /* group by topic */
+      const groups = {};
+      items.forEach(item => {
+        if (!groups[item.topic]) groups[item.topic] = [];
+        groups[item.topic].push(item);
+      });
+
+      list.innerHTML = Object.entries(groups).map(([topic, gItems]) => `
+        <div class="topic-group">
+          <div class="topic-label">${topic}</div>
+          ${gItems.map(item => `
+            <div class="material-card" style="margin-bottom:0.4rem; opacity:${item.done ? 0.55 : 1}; text-decoration:${item.done ? 'line-through' : 'none'}">
+              <div class="card-type-icon">${item.type.split(' ')[0]}</div>
+              <div class="card-body">
+                <div class="card-name">${item.name}</div>
+                <div class="card-meta">${item.type.split(' ').slice(1).join(' ')} · ${item.date}</div>
+              </div>
+              <div class="card-actions">
+                <button class="btn-icon${item.done ? ' done' : ''}" title="Marcar revisado"
+                  onclick="toggleDone('${subj}', ${item.id})">✓</button>
+                <button class="btn-icon del" title="Eliminar"
+                  onclick="deleteItem('${subj}', ${item.id})">✕</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    /* update counts */
+    document.getElementById(`${subj}-count`).textContent =
+      `${items.length} ítem${items.length !== 1 ? 's' : ''}`;
+
+    /* update progress */
+    const done  = items.filter(i => i.done).length;
+    const total = items.length;
+    const pct   = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById(`${subj}-bar`).style.width = pct + '%';
+    document.getElementById(`${subj}-pct`).textContent = pct + '%';
+
+    /* update header stats */
+    updateStats();
+  }
+
+  function updateStats() {
+    document.getElementById('stat-em').textContent = state.em.length;
+    document.getElementById('stat-td').textContent = state.td.length;
+    const allDone = [...state.em, ...state.td].filter(i => i.done).length;
+    document.getElementById('stat-done').textContent = allDone;
+  }
+
+  /* ── ENTER KEY ── */
+  ['em', 'td'].forEach(subj => {
+    document.getElementById(`${subj}-input`)
+      .addEventListener('keydown', e => { if (e.key === 'Enter') addItem(subj); });
+  });
+
+  /* ── INIT ── */
+  render('em');
+  render('td');
+</script>
+</body>
+</html>
