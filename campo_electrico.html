@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Campo Eléctrico — Desde la Materia</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f3ec;
+    --bg2: #ede8df;
+    --panel: #ffffff;
+    --border: #d4c9b8;
+    --ink: #1a1208;
+    --ink2: #4a3e2a;
+    --ink3: #8a7a62;
+    --red: #c0392b;
+    --blue: #1a5276;
+    --orange: #d35400;
+    --green: #1e6b3c;
+    --accent: #8b1a1a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,243,236,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 2rem; gap: 0;
+    overflow-x: auto;
+  }
+  nav a {
+    text-decoration: none;
+    color: var(--ink3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 1.1rem;
+    height: 52px;
+    display: flex; align-items: center;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+  }
+  nav a:first-child { border-left: 1px solid var(--border); }
+  nav a:hover { color: var(--accent); background: rgba(139,26,26,0.05); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: flex-end;
+    padding: 8rem 6vw 5rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* animated field lines in hero */
+  .hero-canvas {
+    position: absolute; inset: 0; z-index: 0;
+    opacity: 0.12;
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeIn 0.7s 0.2s forwards;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.4s forwards;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--ink2);
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.65s forwards;
+  }
+
+  .hero-rule {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin: 2rem 0;
+    opacity: 0;
+    animation: fadeIn 0.7s 0.9s forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ── */
+  .wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .section-tag::before {
+    content: ''; display: inline-block;
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
+    line-height: 1.15;
+  }
+  h2 em { font-style: italic; }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 2.2rem 0 0.6rem;
+  }
+
+  p { margin-bottom: 1rem; color: var(--ink2); }
+  strong { color: var(--ink); font-weight: 500; }
+
+  section + section {
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── ATOM ILLUSTRATION ── */
+  .atom-box {
+    margin: 2.5rem 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    display: flex; align-items: center; gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .atom-svg-wrap { flex: 0 0 200px; }
+  .atom-text { flex: 1; min-width: 240px; }
+  .atom-text h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+  .atom-text p { margin: 0; font-size: 0.93rem; }
+
+  /* ── PARTICLE LEGEND ── */
+  .legend {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    margin: 1rem 0 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot.proton { background: var(--red); }
+  .dot.neutron { background: var(--ink3); }
+  .dot.electron { background: var(--blue); }
+
+  /* ── CHARGE CARDS ── */
+  .charge-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 540px) { .charge-row { grid-template-columns: 1fr; } }
+
+  .charge-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.4rem;
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+  }
+  .charge-card.pos { border-top: 3px solid var(--red); }
+  .charge-card.neg { border-top: 3px solid var(--blue); }
+
+  .charge-symbol {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+  .charge-card.pos .charge-symbol { color: var(--red); }
+  .charge-card.neg .charge-symbol { color: var(--blue); }
+
+  .charge-card h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 400;
+    margin-bottom: 0.4rem;
+    color: var(--ink);
+  }
+  .charge-card p { font-size: 0.9rem; margin: 0; }
+
+  /* ── FORMULA BOX ── */
+  .formula-block {
+    background: var(--ink);
+    color: #f0e8d8;
+    border-radius: 4px;
+    padding: 1.6rem 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .formula-block::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+  }
+  .formula-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    color: #a09070;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+  .formula-main {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.4rem;
+    color: #f5deb3;
+    margin-bottom: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .formula-vars {
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .formula-var {
+    font-size: 0.88rem;
+    color: #b0a090;
+  }
+  .formula-var strong { color: #f0e8d8; }
+
+  /* ── CONDUCTOR / INSULATOR ── */
+  .mat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 540px) { .mat-grid { grid-template-columns: 1fr; } }
+
+  .mat-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.4rem;
+    background: var(--panel);
+  }
+  .mat-card.cond { border-left: 3px solid var(--orange); }
+  .mat-card.ins { border-left: 3px solid var(--green); }
+  .mat-card h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem; font-weight: 400;
+    margin-bottom: 0.6rem; color: var(--ink);
+  }
+  .mat-card.cond h4 { color: var(--orange); }
+  .mat-card.ins h4 { color: var(--green); }
+  .mat-card p { font-size: 0.9rem; margin: 0; }
+  .mat-examples {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--ink3);
+    margin-top: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: rgba(139,26,26,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1.5rem 0;
+    font-size: 0.94rem;
+    color: var(--ink2);
+  }
+  .callout.blue {
+    background: rgba(26,82,118,0.05);
+    border-left-color: var(--blue);
+  }
+
+  /* ── FIELD CONCEPT VISUAL ── */
+  .field-canvas-wrap {
+    margin: 2rem 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .field-canvas-wrap canvas {
+    display: block; width: 100%;
+    max-height: 340px;
+  }
+  .canvas-caption {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink3);
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 0.7rem 1rem;
+    border-top: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+  .canvas-controls {
+    display: flex; gap: 0.8rem; justify-content: center;
+    padding: 0.8rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--bg);
+    color: var(--ink2);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* ── SUMMARY STEPS ── */
+  .steps {
+    counter-reset: step;
+    margin: 2rem 0;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .step {
+    display: flex; gap: 1.5rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity 0.55s, transform 0.55s;
+  }
+  .step.visible { opacity: 1; transform: translateX(0); }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--border);
+    line-height: 1;
+    min-width: 2.2rem;
+    text-align: right;
+  }
+  .step-body h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem; font-weight: 400;
+    margin-bottom: 0.3rem; color: var(--ink);
+  }
+  .step-body p { margin: 0; font-size: 0.93rem; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.65s, transform 0.65s;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.66rem;
+    color: var(--ink3);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#materia">Materia</a>
+  <a href="#carga">Carga</a>
+  <a href="#coulomb">Fuerza</a>
+  <a href="#accion">Acción a distancia</a>
+  <a href="#campo">Campo</a>
+  <a href="#lineas">Líneas de campo</a>
+  <a href="#resumen">Síntesis</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-label">Electromagnetismo · Clase II</div>
+    <h1>El <em>Campo</em><br>Eléctrico</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-desc">
+      Antes de hablar de campos, hay que entender qué propiedades eléctricas tiene la materia.
+      Empezamos por el átomo y llegamos a uno de los conceptos más poderosos de la física clásica.
+    </p>
+  </div>
+</div>
+
+<!-- MATERIA -->
+<section id="materia">
+  <div class="wrapper">
+    <div class="section-tag">01 — La materia</div>
+    <h2>Propiedades eléctricas<br>de la materia</h2>
+    <p>
+      Toda la materia que nos rodea — el aire, el agua, tu cuerpo, un cable de cobre — está formada por <strong>átomos</strong>. Y los átomos, desde una perspectiva clásica, tienen una arquitectura con consecuencias eléctricas profundas.
+    </p>
+
+    <div class="atom-box reveal">
+      <div class="atom-svg-wrap">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <!-- nucleus -->
+          <circle cx="100" cy="100" r="18" fill="#c0392b" opacity="0.9"/>
+          <circle cx="100" cy="100" r="18" fill="none" stroke="#c0392b" stroke-width="1" opacity="0.3"/>
+          <!-- nucleus label -->
+          <text x="100" y="105" text-anchor="middle" font-family="DM Mono" font-size="9" fill="white">N+</text>
+
+          <!-- orbit 1 -->
+          <ellipse cx="100" cy="100" rx="50" ry="20" fill="none" stroke="#1a5276" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+          <!-- electron 1 -->
+          <circle id="e1" cx="150" cy="100" r="5" fill="#1a5276"/>
+
+          <!-- orbit 2 -->
+          <ellipse cx="100" cy="100" rx="75" ry="30" fill="none" stroke="#1a5276" stroke-width="1" stroke-dasharray="3 3" opacity="0.35" transform="rotate(40 100 100)"/>
+          <!-- electron 2 -->
+          <circle id="e2" cx="175" cy="100" r="5" fill="#1a5276"/>
+
+          <!-- orbit 3 -->
+          <ellipse cx="100" cy="100" rx="85" ry="25" fill="none" stroke="#1a5276" stroke-width="1" stroke-dasharray="3 3" opacity="0.25" transform="rotate(-30 100 100)"/>
+          <circle id="e3" cx="185" cy="100" r="4" fill="#1a5276"/>
+        </svg>
+      </div>
+      <div class="atom-text">
+        <h4>El átomo — modelo clásico</h4>
+        <p>Un núcleo central (cargado positivamente) rodeado de electrones (cargados negativamente) que orbitan a su alrededor. En condiciones normales, el átomo tiene la misma cantidad de protones y electrones: es <strong>eléctricamente neutro</strong>.</p>
+        <div class="legend">
+          <div class="legend-item"><div class="dot proton"></div><span>Protón (+)</span></div>
+          <div class="legend-item"><div class="dot neutron"></div><span>Neutrón (0)</span></div>
+          <div class="legend-item"><div class="dot electron"></div><span>Electrón (−)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>El papel clave del electrón</h3>
+    <p>
+      Los protones y neutrones están firmemente ligados en el núcleo: no se mueven con facilidad. Los <strong>electrones</strong>, en cambio, son los protagonistas de la electricidad clásica. En algunos materiales, los electrones de las capas más externas están poco ligados al núcleo y pueden desplazarse libremente de átomo en átomo.
+    </p>
+    <p>
+      Cuando un objeto gana o pierde electrones, deja de ser neutro: queda <em>cargado eléctricamente</em>. Ese desequilibrio es el origen de todos los fenómenos eléctricos.
+    </p>
+
+    <div class="callout">
+      <strong>Dato clave:</strong> La carga del electrón es <em>e = 1,6 × 10⁻¹⁹ C</em> (coulombs). Es la unidad mínima de carga en la naturaleza — la carga está <em>cuantizada</em>. Cualquier carga observable es un múltiplo entero de este valor.
+    </div>
+
+    <h3>Conductores e Aislantes</h3>
+    <p>
+      No todos los materiales responden igual ante la electricidad. La diferencia fundamental está en qué tan libres son los electrones para moverse.
+    </p>
+
+    <div class="mat-grid reveal">
+      <div class="mat-card cond">
+        <h4>Conductores</h4>
+        <p>Tienen electrones de conducción que se mueven libremente por toda la red cristalina. Cuando se aplica un campo eléctrico, estos electrones se desplazan creando una corriente. El exceso de carga se redistribuye rápidamente en la superficie.</p>
+        <div class="mat-examples">Cu · Ag · Au · Fe · Aluminio · Grafito · Plasma</div>
+      </div>
+      <div class="mat-card ins">
+        <h4>Aislantes (dieléctricos)</h4>
+        <p>Los electrones están fuertemente ligados a sus átomos y no pueden moverse libremente. No conducen corriente, pero sí pueden <em>polarizarse</em>: sus cargas internas se redistribuyen levemente ante un campo externo.</p>
+        <div class="mat-examples">Vidrio · Madera seca · Goma · Plástico · Aire seco · Cerámica</div>
+      </div>
+    </div>
+
+    <div class="mat-grid reveal">
+      <div class="mat-card" style="border-left:3px solid #7d3c98;">
+        <h4 style="color:#7d3c98;">Semiconductores</h4>
+        <p>A temperatura ambiente, conducen parcialmente. Con impurezas controladas (<em>dopaje</em>) se pueden diseñar su conductividad. Son la base de transistores, diodos y chips — toda la electrónica moderna.</p>
+        <div class="mat-examples" style="color:#7d3c98;">Si · Ge · GaAs · InP</div>
+      </div>
+      <div class="mat-card" style="border-left:3px solid #117a65;">
+        <h4 style="color:#117a65;">Superconductores</h4>
+        <p>Por debajo de una temperatura crítica, su resistencia eléctrica cae exactamente a cero. Los electrones forman pares de Cooper y se mueven sin fricción. Usados en MRI, trenes maglev y computación cuántica.</p>
+        <div class="mat-examples" style="color:#117a65;">Nb · YBaCuO · HgBaCaCuO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARGA -->
+<section id="carga">
+  <div class="wrapper">
+    <div class="section-tag">02 — Carga eléctrica</div>
+    <h2>La carga eléctrica</h2>
+    <p>
+      La carga eléctrica es una propiedad fundamental de la materia, así como la masa. A diferencia de la masa, la carga puede ser positiva o negativa — y eso tiene consecuencias enormes.
+    </p>
+
+    <div class="charge-row">
+      <div class="charge-card pos reveal">
+        <div class="charge-symbol">+</div>
+        <h4>Carga positiva</h4>
+        <p>Un objeto está cargado positivamente cuando perdió electrones — tiene más protones que electrones. El protón tiene carga <strong>+e = +1,6×10⁻¹⁹ C</strong>.</p>
+      </div>
+      <div class="charge-card neg reveal">
+        <div class="charge-symbol">−</div>
+        <h4>Carga negativa</h4>
+        <p>Un objeto está cargado negativamente cuando ganó electrones — tiene más electrones que protones. El electrón tiene carga <strong>−e = −1,6×10⁻¹⁹ C</strong>.</p>
+      </div>
+    </div>
+
+    <h3>Principios fundamentales de la carga</h3>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Conservación de la carga</h4>
+          <p>La carga eléctrica total de un sistema aislado no cambia. Si un objeto gana −Q, otro debe haber ganado +Q. Nunca se crea ni se destruye carga, solo se transfiere.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Cuantización de la carga</h4>
+          <p>Toda carga medible es múltiplo entero de la carga elemental <em>e</em>. No existe media carga de electrón. La carga es discreta, no continua (aunque en la práctica, con muchos electrones, parece continua).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Atracción y repulsión</h4>
+          <p>Cargas del mismo signo se repelen. Cargas de signo opuesto se atraen. Esta regla, simple y poderosa, rige desde la unión del átomo hasta la organización de las moléculas biológicas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout blue">
+      <strong>Electrización:</strong> Se puede cargar un objeto por <em>frotamiento</em> (transferencia directa de electrones), por <em>contacto</em> (un objeto cargado toca a otro) o por <em>inducción</em> (un objeto cargado redistribuye las cargas de un conductor cercano sin tocarlo). Este último es especialmente importante para entender la inducción electromagnética.
+    </div>
+  </div>
+</section>
+
+<!-- COULOMB -->
+<section id="coulomb">
+  <div class="wrapper">
+    <div class="section-tag">03 — Fuerza eléctrica</div>
+    <h2>La Ley de Coulomb</h2>
+    <p>
+      En 1785, Coulomb midió con precisión la fuerza entre cargas eléctricas. El resultado fue una ley matemáticamente idéntica a la ley de gravitación universal de Newton, descubierta un siglo antes.
+    </p>
+
+    <div class="formula-block reveal">
+      <div class="formula-label">Ley de Coulomb</div>
+      <div class="formula-main">F = k · |q₁ · q₂| / r²</div>
+      <div class="formula-vars">
+        <div class="formula-var"><strong>F</strong> — Fuerza eléctrica entre las dos cargas [N]</div>
+        <div class="formula-var"><strong>k</strong> — Constante de Coulomb: 9×10⁹ N·m²/C²</div>
+        <div class="formula-var"><strong>q₁, q₂</strong> — Valores de las cargas [C]</div>
+        <div class="formula-var"><strong>r</strong> — Distancia entre las cargas [m]</div>
+      </div>
+    </div>
+
+    <h3>Interpretación de la ley</h3>
+    <p>
+      La fuerza es <strong>proporcional al producto de las cargas</strong>: si duplicás una carga, la fuerza se duplica. Si duplicás las dos, se cuadruplica. Es también <strong>inversamente proporcional al cuadrado de la distancia</strong>: si alejás las cargas al doble, la fuerza cae a un cuarto. Esta dependencia con <em>1/r²</em> se llama <strong>ley del cuadrado inverso</strong> y aparece también en la gravedad y en la intensidad lumínica.
+    </p>
+
+    <div class="callout">
+      <strong>Comparación con la gravedad:</strong> La fuerza eléctrica entre un protón y un electrón en un átomo de hidrógeno es aproximadamente <em>10³⁹ veces más intensa</em> que la fuerza gravitatoria entre ellos. La gravedad domina a escala astronómica solo porque la materia ordinaria es eléctricamente neutra en grandes escalas.
+    </div>
+
+    <p>
+      La fuerza de Coulomb es un <strong>vector</strong>: tiene módulo (dado por la fórmula), dirección (la línea que une las cargas) y sentido (atracción u repulsión). Para múltiples cargas, la fuerza neta sobre una carga es la suma vectorial de todas las fuerzas individuales — <em>principio de superposición</em>.
+    </p>
+  </div>
+</section>
+
+<!-- ACCION A DISTANCIA -->
+<section id="accion">
+  <div class="wrapper">
+    <div class="section-tag">04 — El problema</div>
+    <h2>El problema de la<br><em>acción a distancia</em></h2>
+    <p>
+      La ley de Coulomb describe cuánta fuerza hay entre dos cargas. Pero esconde una pregunta incómoda: <strong>¿cómo "sabe" una carga que la otra existe?</strong>
+    </p>
+    <p>
+      Si movemos una carga, ¿la otra siente el cambio instantáneamente, sin importar la distancia? Eso sería <em>acción a distancia</em> — un concepto que inquietó a Newton con la gravedad y que le resultaba filosóficamente insatisfactorio.
+    </p>
+
+    <div class="callout">
+      <strong>Newton lo sabía:</strong> Escribió: "Que la gravedad sea innata, inherente e esencial a la materia, de modo que un cuerpo actúe sobre otro a través del vacío sin la mediación de ninguna otra cosa, me parece una gran absurdidad." Pero no tenía una alternativa mejor. Esa alternativa llegó 150 años después, con Faraday y Maxwell.
+    </div>
+
+    <h3>La intuición de Faraday</h3>
+    <p>
+      Michael Faraday era un experimentador brillante pero con formación matemática modesta. Para visualizar sus resultados, inventó una herramienta conceptual: las <strong>líneas de fuerza</strong>. En su visión, el espacio alrededor de una carga no está vacío — está <em>perturbado</em>, <em>tensionado</em>. La carga modifica el espacio a su alrededor, y esa modificación es lo que actúa sobre otras cargas.
+    </p>
+    <p>
+      Esta intuición era radicalmente distinta a la acción a distancia. En lugar de que las cargas se comuniquen directamente entre sí, cada carga <em>genera una perturbación en el espacio</em>, y las otras cargas responden a esa perturbación local.
+    </p>
+    <p>
+      Maxwell tomó la intuición de Faraday y la convirtió en matemática rigurosa. Nació el concepto de <strong>campo eléctrico</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- CAMPO -->
+<section id="campo">
+  <div class="wrapper">
+    <div class="section-tag">05 — El campo</div>
+    <h2>El Campo Eléctrico</h2>
+    <p>
+      El campo eléctrico es la respuesta elegante al problema de la acción a distancia. En lugar de preguntar "¿qué fuerza ejerce la carga A sobre la carga B?", preguntamos: <strong>"¿qué perturbación crea la carga A en el espacio que la rodea?"</strong>
+    </p>
+
+    <h3>Definición operacional</h3>
+    <p>
+      Imaginá que colocás una carga de prueba pequeña y positiva <em>q₀</em> en un punto del espacio. Si en ese punto hay un campo eléctrico, la carga experimentará una fuerza <strong>F</strong>. El campo eléctrico <strong>E</strong> en ese punto se define como:
+    </p>
+
+    <div class="formula-block reveal">
+      <div class="formula-label">Definición del Campo Eléctrico</div>
+      <div class="formula-main">E = F / q₀</div>
+      <div class="formula-vars">
+        <div class="formula-var"><strong>E</strong> — Campo eléctrico en el punto [N/C] o [V/m]</div>
+        <div class="formula-var"><strong>F</strong> — Fuerza eléctrica sobre la carga de prueba [N]</div>
+        <div class="formula-var"><strong>q₀</strong> — Carga de prueba (positiva, pequeña) [C]</div>
+      </div>
+    </div>
+
+    <p>
+      El campo es un <strong>vector</strong>: tiene módulo y dirección. Su dirección es la dirección de la fuerza sobre una carga <em>positiva</em> de prueba. Si la carga fuente es negativa, el campo apunta <em>hacia</em> ella; si es positiva, apunta <em>alejándose</em> de ella.
+    </p>
+
+    <div class="callout blue">
+      <strong>¿Qué es realmente el campo?</strong> El campo eléctrico no es una abstracción matemática conveniente — es una entidad física real que existe en el espacio, almacena energía y se propaga a la velocidad de la luz. Cuando una carga se mueve, la perturbación en el campo se propaga hacia afuera, no instantáneamente. Eso resuelve el problema de la acción a distancia.
+    </div>
+
+    <h3>Campo de una carga puntual</h3>
+    <p>Combinando la definición de campo con la ley de Coulomb, se obtiene el campo eléctrico creado por una carga puntual <em>Q</em>:</p>
+
+    <div class="formula-block reveal">
+      <div class="formula-label">Campo de carga puntual</div>
+      <div class="formula-main">E = k · Q / r²</div>
+      <div class="formula-vars">
+        <div class="formula-var"><strong>E</strong> — Módulo del campo en el punto [N/C]</div>
+        <div class="formula-var"><strong>Q</strong> — Carga fuente [C]</div>
+        <div class="formula-var"><strong>r</strong> — Distancia al punto de medición [m]</div>
+        <div class="formula-var"><strong>Dirección:</strong> radial, alejándose si Q &gt; 0, acercándose si Q &lt; 0</div>
+      </div>
+    </div>
+
+    <h3>Superposición de campos</h3>
+    <p>
+      Así como la fuerza, el campo eléctrico cumple el <strong>principio de superposición</strong>: el campo total en un punto es la suma vectorial de los campos individuales de cada carga fuente. Esto permite calcular el campo de distribuciones complejas de carga (líneas, superficies, volúmenes) integrando las contribuciones de cada elemento.
+    </p>
+  </div>
+</section>
+
+<!-- LÍNEAS DE CAMPO — INTERACTIVO -->
+<section id="lineas">
+  <div class="wrapper">
+    <div class="section-tag">06 — Visualización</div>
+    <h2>Líneas de campo eléctrico</h2>
+    <p>
+      Las líneas de campo eléctrico son una herramienta visual inventada por Faraday. Permiten representar el campo en todo el espacio de un vistazo. Tienen reglas precisas que las hacen informativas y no arbitrarias.
+    </p>
+
+    <div class="field-canvas-wrap reveal">
+      <canvas id="fieldCanvas" height="320"></canvas>
+      <div class="canvas-controls">
+        <button class="ctrl-btn active" onclick="setMode('positive')" id="btn-pos">+ Carga positiva</button>
+        <button class="ctrl-btn" onclick="setMode('negative')" id="btn-neg">− Carga negativa</button>
+        <button class="ctrl-btn" onclick="setMode('dipole')" id="btn-dip">Dipolo ±</button>
+        <button class="ctrl-btn" onclick="setMode('parallel')" id="btn-par">Cargas iguales ++</button>
+        <button class="ctrl-btn" onclick="clearField()" id="btn-clr">Limpiar</button>
+      </div>
+      <div class="canvas-caption">Campo eléctrico — visualización interactiva · Las flechas indican la dirección y sentido del campo</div>
+    </div>
+
+    <h3>Reglas de las líneas de campo</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Origen y destino</h4>
+          <p>Las líneas de campo nacen en cargas positivas y terminan en cargas negativas (o se pierden en el infinito si no hay carga negativa cercana).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Densidad = intensidad</h4>
+          <p>Cuanto más juntas están las líneas en una zona, más intenso es el campo en esa zona. Cerca de una carga puntual, las líneas están muy densas; lejos, se separan.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Sin cruce</h4>
+          <p>Dos líneas de campo nunca se cruzan. Si se cruzaran, el campo tendría dos direcciones en el mismo punto — lo que es imposible.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Perpendicularidad a superficies conductoras</h4>
+          <p>En la superficie de un conductor en equilibrio, el campo es siempre perpendicular a la superficie. Si hubiera una componente paralela, los electrones libres se moverían hasta anularla.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUMEN -->
+<section id="resumen">
+  <div class="wrapper">
+    <div class="section-tag">07 — Síntesis</div>
+    <h2>El camino recorrido</h2>
+    <p>
+      Partimos del átomo y llegamos al campo. Cada paso fue necesario para construir el siguiente.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>La materia tiene carga</h4>
+          <p>Los átomos contienen cargas positivas (protones) y negativas (electrones). La materia neutra tiene ambas en equilibrio. Los electrones libres son los que permiten la electricidad.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Las cargas interactúan</h4>
+          <p>Cargas iguales se repelen, opuestas se atraen. La ley de Coulomb cuantifica esa fuerza: decrece con el cuadrado de la distancia y es proporcional al producto de las cargas.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Surge el problema</h4>
+          <p>¿Cómo se comunican las cargas a través del vacío? La acción a distancia instantánea es filosóficamente insatisfactoria y físicamente incorrecta (viola la relatividad).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>El campo como solución</h4>
+          <p>Cada carga <em>modifica el espacio a su alrededor</em>. Esa modificación es el campo eléctrico. Las otras cargas no responden a la carga lejana directamente, sino al campo local en su posición.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>El campo es real y dinámico</h4>
+          <p>El campo almacena energía, se propaga a la velocidad de la luz y, cuando varía en el tiempo, genera campos magnéticos. Las ecuaciones de Maxwell describen esta dinámica completa — y predicen la existencia de ondas electromagnéticas.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:2rem;">
+      <strong>La próxima pregunta natural:</strong> Si una carga moviéndose crea un campo magnético (ley de Ampère), y un campo magnético que cambia crea un campo eléctrico (ley de Faraday), ¿qué pasa si estos campos se generan mutuamente de manera continua en el espacio? La respuesta es la onda electromagnética — y esa es la clase que sigue.
+    </div>
+  </div>
+</section>
+
+<footer>
+  E = F / q₀ &nbsp;·&nbsp; F = k·q₁·q₂ / r² &nbsp;·&nbsp; Electrostática clásica · 2026
+</footer>
+
+<script>
+// ─────────────────────────────────────────
+// HERO CANVAS — faint field lines animation
+// ─────────────────────────────────────────
+(function() {
+  const c = document.getElementById('heroCanvas');
+  const hero = c.parentElement;
+  function resize() {
+    c.width = hero.offsetWidth;
+    c.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const ctx = c.getContext('2d');
+
+  // a single positive charge at center-ish
+  const charge = { x: 0.35, y: 0.45 };
+  const N_LINES = 24;
+  const STEPS = 120;
+  const STEP_SIZE = 14;
+
+  function field(x, y) {
+    const dx = x - charge.x * c.width;
+    const dy = y - charge.y * c.height;
+    const r2 = dx * dx + dy * dy;
+    const r = Math.sqrt(r2);
+    if (r < 1) return { ex: 0, ey: 0 };
+    return { ex: dx / (r2), ey: dy / (r2) };
+  }
+
+  function drawLines(t) {
+    ctx.clearRect(0, 0, c.width, c.height);
+    for (let i = 0; i < N_LINES; i++) {
+      const angle = (2 * Math.PI * i / N_LINES) + t * 0.0004;
+      let x = charge.x * c.width + 18 * Math.cos(angle);
+      let y = charge.y * c.height + 18 * Math.sin(angle);
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      for (let s = 0; s < STEPS; s++) {
+        const f = field(x, y);
+        const mag = Math.sqrt(f.ex * f.ex + f.ey * f.ey);
+        if (mag === 0) break;
+        x += (f.ex / mag) * STEP_SIZE;
+        y += (f.ey / mag) * STEP_SIZE;
+        if (x < 0 || x > c.width || y < 0 || y > c.height) break;
+        ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(139,26,26,${0.5 + 0.3 * Math.sin(t * 0.001 + i)})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    }
+    requestAnimationFrame(drawLines);
+  }
+  requestAnimationFrame(drawLines);
+})();
+
+// ─────────────────────────────────────────
+// FIELD CANVAS — interactive
+// ─────────────────────────────────────────
+const fc = document.getElementById('fieldCanvas');
+const fctx = fc.getContext('2d');
+let currentMode = 'positive';
+
+function resizeField() {
+  const wrap = fc.parentElement;
+  fc.width = wrap.offsetWidth;
+  fc.height = Math.min(320, window.innerHeight * 0.45);
+  drawField();
+}
+
+function setMode(m) {
+  currentMode = m;
+  ['pos','neg','dip','par'].forEach(id => {
+    document.getElementById('btn-' + id)?.classList.remove('active');
+  });
+  const map = { positive:'pos', negative:'neg', dipole:'dip', parallel:'par' };
+  document.getElementById('btn-' + map[m])?.classList.add('active');
+  drawField();
+}
+
+function clearField() {
+  fctx.clearRect(0, 0, fc.width, fc.height);
+  currentMode = null;
+  ['pos','neg','dip','par'].forEach(id => document.getElementById('btn-' + id)?.classList.remove('active'));
+}
+
+function getCharges() {
+  const cx = fc.width / 2, cy = fc.height / 2;
+  const off = fc.width * 0.18;
+  if (currentMode === 'positive') return [{ x: cx, y: cy, q: 1 }];
+  if (currentMode === 'negative') return [{ x: cx, y: cy, q: -1 }];
+  if (currentMode === 'dipole')   return [{ x: cx - off, y: cy, q: 1 }, { x: cx + off, y: cy, q: -1 }];
+  if (currentMode === 'parallel') return [{ x: cx - off, y: cy, q: 1 }, { x: cx + off, y: cy, q: 1 }];
+  return [];
+}
+
+function totalField(x, y, charges) {
+  let ex = 0, ey = 0;
+  for (const c of charges) {
+    const dx = x - c.x, dy = y - c.y;
+    const r2 = dx * dx + dy * dy;
+    if (r2 < 4) continue;
+    const r = Math.sqrt(r2);
+    const scale = c.q / r2;
+    ex += scale * dx / r;
+    ey += scale * dy / r;
+  }
+  return { ex, ey };
+}
+
+function drawField() {
+  if (!currentMode) return;
+  fctx.clearRect(0, 0, fc.width, fc.height);
+  fctx.fillStyle = '#ffffff';
+  fctx.fillRect(0, 0, fc.width, fc.height);
+
+  const charges = getCharges();
+  const GRID = Math.min(fc.width, fc.height) > 300 ? 38 : 28;
+  const STEP = 20;
+  const MAX_LEN = 16;
+
+  // draw field arrows on grid
+  const cols = Math.floor(fc.width / GRID) + 1;
+  const rows = Math.floor(fc.height / GRID) + 1;
+  for (let i = 0; i <= cols; i++) {
+    for (let j = 0; j <= rows; j++) {
+      const x = i * GRID + GRID / 2;
+      const y = j * GRID + GRID / 2;
+      const { ex, ey } = totalField(x, y, charges);
+      const mag = Math.sqrt(ex * ex + ey * ey);
+      if (mag < 1e-6) continue;
+      const len = Math.min(MAX_LEN, Math.log(mag * 1e4 + 1) * 3);
+      const nx = ex / mag, ny = ey / mag;
+
+      // color by magnitude
+      const intensity = Math.min(1, Math.log(mag * 1e4 + 1) / 7);
+      const r = Math.round(26 + 176 * intensity);
+      const g = Math.round(82 - 70 * intensity);
+      const b = Math.round(118 - 100 * intensity);
+      fctx.strokeStyle = `rgba(${r},${g},${b},${0.55 + 0.4 * intensity})`;
+      fctx.lineWidth = 0.9;
+
+      // arrow
+      const x2 = x + nx * len, y2 = y + ny * len;
+      fctx.beginPath();
+      fctx.moveTo(x, y);
+      fctx.lineTo(x2, y2);
+      fctx.stroke();
+
+      // arrowhead
+      const ah = 3.5;
+      const angle = Math.atan2(ny, nx);
+      fctx.beginPath();
+      fctx.moveTo(x2, y2);
+      fctx.lineTo(x2 - ah * Math.cos(angle - 0.5), y2 - ah * Math.sin(angle - 0.5));
+      fctx.lineTo(x2 - ah * Math.cos(angle + 0.5), y2 - ah * Math.sin(angle + 0.5));
+      fctx.closePath();
+      fctx.fillStyle = `rgba(${r},${g},${b},0.85)`;
+      fctx.fill();
+    }
+  }
+
+  // draw field lines
+  const N_LINES = 16;
+  const FSTEPS = 200;
+  const FS = 9;
+
+  for (const ch of charges) {
+    const sign = ch.q > 0 ? 1 : -1;
+    for (let i = 0; i < N_LINES; i++) {
+      const angle = (2 * Math.PI * i / N_LINES);
+      let x = ch.x + 22 * Math.cos(angle);
+      let y = ch.y + 22 * Math.sin(angle);
+
+      fctx.beginPath();
+      fctx.moveTo(x, y);
+      for (let s = 0; s < FSTEPS; s++) {
+        const f = totalField(x, y, charges);
+        const m = Math.sqrt(f.ex * f.ex + f.ey * f.ey);
+        if (m < 1e-6) break;
+        x += sign * (f.ex / m) * FS;
+        y += sign * (f.ey / m) * FS;
+        if (x < 0 || x > fc.width || y < 0 || y > fc.height) break;
+        // stop near negative charge
+        let stopped = false;
+        for (const c2 of charges) {
+          if (c2.q < 0) {
+            const dx = x - c2.x, dy = y - c2.y;
+            if (dx * dx + dy * dy < 25 * 25) { stopped = true; break; }
+          }
+        }
+        if (stopped) break;
+        fctx.lineTo(x, y);
+      }
+      fctx.strokeStyle = ch.q > 0 ? 'rgba(192,57,43,0.5)' : 'rgba(26,82,118,0.5)';
+      fctx.lineWidth = 1.1;
+      fctx.stroke();
+    }
+
+    // draw charge circle
+    const gradient = fctx.createRadialGradient(ch.x, ch.y, 2, ch.x, ch.y, 18);
+    if (ch.q > 0) {
+      gradient.addColorStop(0, '#e74c3c');
+      gradient.addColorStop(1, 'rgba(192,57,43,0.6)');
+    } else {
+      gradient.addColorStop(0, '#2980b9');
+      gradient.addColorStop(1, 'rgba(26,82,118,0.6)');
+    }
+    fctx.beginPath();
+    fctx.arc(ch.x, ch.y, 18, 0, Math.PI * 2);
+    fctx.fillStyle = gradient;
+    fctx.fill();
+    fctx.strokeStyle = ch.q > 0 ? '#c0392b' : '#1a5276';
+    fctx.lineWidth = 1.5;
+    fctx.stroke();
+
+    fctx.fillStyle = '#fff';
+    fctx.font = 'bold 18px serif';
+    fctx.textAlign = 'center';
+    fctx.textBaseline = 'middle';
+    fctx.fillText(ch.q > 0 ? '+' : '−', ch.x, ch.y);
+  }
+}
+
+window.addEventListener('resize', resizeField);
+resizeField();
+
+// ─────────────────────────────────────────
+// SCROLL REVEAL
+// ─────────────────────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 60);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal, .step').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
