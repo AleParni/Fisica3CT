@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Electromagnetismo, Relatividad y Cuántica - 3° CT</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                enableMenu: false
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.8; color: #1a1a1a; max-width: 1050px; margin: 0 auto; padding: 40px; background-color: #f8f9fa; }
+        .slide { background: white; padding: 45px; margin-bottom: 35px; border-radius: 15px; box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-left: 8px solid #6c5ce7; }
+        h1 { color: #2d3436; text-align: center; font-size: 2.8em; letter-spacing: -1px; }
+        h2 { color: #6c5ce7; border-bottom: 1px solid #dfe6e9; padding-bottom: 15px; }
+        .eval-card { background: #f1f2f6; border: 2px dashed #6c5ce7; padding: 25px; border-radius: 10px; margin: 20px 0; }
+        .formula-box { background: #2d3436; color: #fab1a0; padding: 25px; border-radius: 12px; text-align: center; font-size: 1.3em; margin: 20px 0; overflow-x: auto; }
+        .concept-tag { background: #ffeaa7; color: #d63031; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
+        .footer-note { text-align: center; color: #636e72; font-size: 0.85em; margin-top: 60px; }
+        li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="slide">
+        <h1>Física Moderna y Electromagnetismo</h1>
+        <p style="text-align: center; font-size: 1.2em;"><strong>3° Científico Tecnológico</strong> | La estructura de la realidad</p>
+    </div>
+
+    <div class="slide">
+        <h2>📊 Reglas de Supervivencia (Evaluación)</h2>
+        <div class="eval-card">
+            <ul>
+                <li><strong>Exoneración:</strong> <span class="concept-tag">Nota ≥ 5</span>. Si alcanzas este promedio, el curso queda aprobado sin examen final.</li>
+                <li><strong>Tutorías (Nota < 5):</strong> Acompañamiento obligatorio hasta diciembre. No es un castigo, es refuerzo conceptual.</li>
+                <li><strong>Prueba Tribunalizada (Febrero):</strong> Instancia evaluatoria final ante tribunal docente para quienes no logren la exoneración o el cierre en diciembre.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>⚡ Las 4 Columnas: Ecuaciones de Maxwell</h2>
+        <p>El electromagnetismo clásico es la base de todo lo que veremos. Maxwell sintetizó el universo en estas integrales:</p>
+        
+        [attachment_0](attachment)
+
+        <ol>
+            <li><strong>Ley de Gauss Eléctrica:</strong> $\oint \vec{E} \cdot d\vec{A} = \frac{Q}{\varepsilon_0}$. Las cargas crean campos.</li>
+            <li><strong>Ley de Gauss Magnética:</strong> $\oint \vec{B} \cdot d\vec{A} = 0$. No hay monopolos; las líneas de campo son cerradas.</li>
+            <li><strong>Ley de Faraday-Lenz:</strong> $\oint \vec{E} \cdot d\vec{l} = -\frac{d\Phi_B}{dt}$. Un flujo magnético variable crea un campo eléctrico.</li>
+            <li><strong>Ley de Ampère-Maxwell:</strong> $\oint \vec{B} \cdot d\vec{l} = \mu_0 (I + \varepsilon_0 \frac{d\Phi_E}{dt})$. La corriente y el campo eléctrico variable crean magnetismo.</li>
+        </ol>
+    </div>
+
+    <div class="slide">
+        <h2>🚀 Relatividad Especial: Tiempo y Espacio</h2>
+        <p>A velocidades cercanas a la de la luz ($c$), la física de Newton se rompe.</p>
+        <ul>
+            <li><strong>Postulado 1:</strong> Las leyes de la física son las mismas en todos los sistemas inerciales.</li>
+            <li><strong>Postulado 2:</strong> La velocidad de la luz $c$ es constante para todo observador.</li>
+        </ul>
+        <div class="formula-box">
+            $$E = \gamma mc^2 \quad \text{donde} \quad \gamma = \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}}$$
+        </div>
+        <p><strong>Relación con EM:</strong> ¿Sabías que el magnetismo es, en realidad, un efecto de la relatividad especial aplicado a cargas eléctricas en movimiento?</p>
+    </div>
+
+    <div class="slide">
+        <h2>⚛️ Efectos Cuánticos: Dualidad y Energía</h2>
+        <p>En la escala atómica, la energía no es continua, es discreta (paquetes).</p>
+        <ul>
+            <li><strong>Efecto Fotoeléctrico:</strong> La luz se comporta como partícula (fotón). Einstein ganó el Nobel por esto, conectando EM y Cuántica.</li>
+            <li><strong>Dualidad Onda-Partícula:</strong> La materia tiene una longitud de onda asociada (De Broglie).</li>
+        </ul>
+        <div class="formula-box">
+            $$E = h \cdot f \quad | \quad \lambda = \frac{h}{p}$$
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>🔗 La Síntesis Tecnológica</h2>
+        <p>¿Cómo se conectan estos temas?</p>
+        <ul>
+            <li><strong>Semiconductores:</strong> La base de tus dispositivos. Funcionan gracias a efectos cuánticos en materiales sólidos.</li>
+            <li><strong>GPS:</strong> Los satélites deben corregir sus relojes usando Relatividad General y Especial para sincronizarse con la Tierra.</li>
+            <li><strong>Láseres:</strong> Emisión estimulada (Cuántica) de ondas electromagnéticas (Maxwell).</li>
+        </ul>
+    </div>
+
+    <div class="slide" style="border: 3px solid #6c5ce7; background: #f9f7ff;">
+        <h2>🌱 Pregunta Fértil</h2>
+        <p style="font-size: 1.5em; text-align: center; color: #2d3436;">
+            <strong>"Si el magnetismo es solo electricidad vista desde un marco de referencia en movimiento (Relatividad), ¿hasta qué punto nuestra percepción de la realidad depende únicamente de qué tan rápido nos estemos moviendo?"</strong>
+        </p>
+    </div>
+
+    <p class="footer-note">Programa de Física - 3° Año Científico Tecnológico - 2026 Prof. Tgo. Alejandro Parnizari, asistido por Gemini IA</p>
+
+</body>
+</html>
